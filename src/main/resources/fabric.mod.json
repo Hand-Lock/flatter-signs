@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "flattersigns",
+  "version": "${version}",
+  "name": "Flatter Signs: A Mode 13h Addon",
+  "description": "A Fabric mod for Minecraft 1.20.1 that alters signs' rendering for better readability with retro shaderpacks.",
+  "authors": [
+    "HandLock_"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+  "license": "LGPL-3.0-or-later",
+  "icon": "assets/flattersigns/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.handlock_.flattersigns.FlatterSigns"
+    ],
+    "client": [
+      "com.handlock_.flattersigns.client.FlatterSignsClient"
+    ]
+  },
+  "mixins": [
+    "flattersigns.mixins.json",
+    {
+      "config": "flattersigns.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}
