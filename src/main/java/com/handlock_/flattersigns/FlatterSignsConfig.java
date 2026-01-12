@@ -14,11 +14,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Simple JSON config that lives in {@code config/flattersigns.json}.
+ * Simple JSON config for Flatter Signs.
  *
- * <p>The file is always written back on load to ensure all keys exist and are up-to-date.</p>
+ * The file is generated at:
+ *   config/flattersigns.json
  *
- * <p>Note: config is loaded once at startup; changes require a restart.</p>
+ * Each option is intentionally "boring": primitives only, no nested objects,
+ * so users can easily edit it by hand.
  */
 public final class FlatterSignsConfig {
 
@@ -51,15 +53,40 @@ public final class FlatterSignsConfig {
     public boolean defaultWhiteText = true;
 
     /**
-     * Make glow ink sac actually emit block light (server-side) and force a
-     * block update so it is visible immediately (especially on Forge+Sinytra).
+     * Make glowing signs render at full-bright and force a block update so the
+     * change is visible immediately (especially on Forge+Sinytra).
      */
     public boolean glowInkLighting = true;
 
-    private FlatterSignsConfig() {
-    }
+    /**
+     * Wall sign texture crop offset (in pixels, 0..16).
+     *
+     * This shifts the cropped window down inside the sign item sprite.
+     * Useful for resource packs that move the board/stem vertically.
+     *
+     * Value is clamped so (offset + wall_sign_texture_crop_height) never exceeds 16.
+     *
+     * Default is 0.
+     */
+    public int wallSignTextureCropOffset = 0;
 
-    public static synchronized void load() {
+    /**
+     * Wall sign texture crop height (in pixels, 1..16).
+     *
+     * This is how many pixels (starting at wall_sign_texture_crop_offset) of the
+     * vanilla sign ITEM texture the flat wall-sign model will display.
+     *
+     * Lower values cut off more of the bottom stem, which helps with resource packs
+     * that change the stem length.
+     *
+     * Default is 11 (vanilla stem trim of 5px).
+     */
+    public int wallSignTextureCropHeight = 11;
+
+    // Public API ----------------------------------------------------------
+
+    /** Loads (or creates) the config file once. Safe to call multiple times. */
+    public static void load() {
         if (loaded) {
             return;
         }
@@ -78,6 +105,22 @@ public final class FlatterSignsConfig {
                 cfg.crouchEditAndChat = getBoolean(obj, "crouch_edit_and_chat", cfg.crouchEditAndChat);
                 cfg.defaultWhiteText = getBoolean(obj, "default_white_text", cfg.defaultWhiteText);
                 cfg.glowInkLighting = getBoolean(obj, "glow_ink_lighting", cfg.glowInkLighting);
+
+                cfg.wallSignTextureCropHeight = getInt(
+                        obj,
+                        "wall_sign_texture_crop_height",
+                        cfg.wallSignTextureCropHeight,
+                        1,
+                        16
+                );
+
+                cfg.wallSignTextureCropOffset = getInt(
+                        obj,
+                        "wall_sign_texture_crop_offset",
+                        cfg.wallSignTextureCropOffset,
+                        0,
+                        16
+                );
             } catch (Exception e) {
                 // If the file is malformed, keep defaults and overwrite it.
                 FlatterSigns.LOGGER.warn("Failed to read config file '{}'. Using defaults and rewriting it.", path, e);
@@ -86,7 +129,7 @@ public final class FlatterSignsConfig {
 
         INSTANCE = cfg;
 
-        // Always write back so the file exists and includes all keys.
+        // Always write back so the file exists and includes new keys after updates.
         try {
             write(cfg);
         } catch (IOException e) {
@@ -118,6 +161,29 @@ public final class FlatterSignsConfig {
         return get().glowInkLighting;
     }
 
+    /**
+     * @return wall sign crop offset in pixels (clamped so offset + height <= 16)
+     */
+    public static int getWallSignTextureCropOffset() {
+        int height = getWallSignTextureCropHeight();
+        int v = get().wallSignTextureCropOffset;
+        if (v < 0) v = 0;
+        if (v > 16) v = 16;
+        int max = 16 - height;
+        if (v > max) v = max;
+        return v;
+    }
+
+    /**
+     * @return wall sign crop height in pixels (clamped 1..16)
+     */
+    public static int getWallSignTextureCropHeight() {
+        int v = get().wallSignTextureCropHeight;
+        if (v < 1) return 1;
+        if (v > 16) return 16;
+        return v;
+    }
+
     // Internal helpers ---------------------------------
 
     private static FlatterSignsConfig get() {
@@ -132,15 +198,24 @@ public final class FlatterSignsConfig {
     }
 
     private static boolean getBoolean(JsonObject obj, String key, boolean def) {
-        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) {
-            return def;
-        }
-
         try {
-            return obj.get(key).getAsBoolean();
-        } catch (Exception e) {
-            return def;
-        }
+            if (obj.has(key) && obj.get(key).isJsonPrimitive()) {
+                return obj.get(key).getAsBoolean();
+            }
+        } catch (Exception ignored) {}
+        return def;
+    }
+
+    private static int getInt(JsonObject obj, String key, int def, int min, int max) {
+        try {
+            if (obj.has(key) && obj.get(key).isJsonPrimitive()) {
+                int v = obj.get(key).getAsInt();
+                if (v < min) v = min;
+                if (v > max) v = max;
+                return v;
+            }
+        } catch (Exception ignored) {}
+        return def;
     }
 
     private static void write(FlatterSignsConfig cfg) throws IOException {
@@ -161,6 +236,10 @@ public final class FlatterSignsConfig {
         obj.addProperty("crouch_edit_and_chat", cfg.crouchEditAndChat);
         obj.addProperty("default_white_text", cfg.defaultWhiteText);
         obj.addProperty("glow_ink_lighting", cfg.glowInkLighting);
+
+        obj.addProperty("wall_sign_texture_crop_offset", cfg.wallSignTextureCropOffset);
+
+        obj.addProperty("wall_sign_texture_crop_height", cfg.wallSignTextureCropHeight);
         return obj;
     }
 }

@@ -1,4 +1,4 @@
-[![License: LGPL v3 or later](https://img.shields.io/badge/License-LGPL%20v3%2B-blue.svg)](https://github.com/Hand-Lock/studded-armor/blob/master/LICENSE)
+[![License: LGPL v3 or later](https://img.shields.io/badge/License-LGPL%20v3%2B-blue.svg)](https://github.com/Hand-Lock/flatter-signs/blob/HEAD/LICENSE)
 
 # Flatter Signs: A Mode 13h Addon
 
@@ -52,7 +52,7 @@ These interactions affect both the sign itself *and* the chat output:
 
 * Signs use the **item sign texture**, so they stay compatible with **any resource pack** automatically.
 * Wall signs are **procedurally generated** from the item texture:
-  if your pack keeps the *general vanilla sign silhouette*, it should “just work” with no extra assets.
+  if your pack keeps the *general vanilla sign silhouette*, it should “just work” with no extra assets (otherwise, check **Configuration** below).
 
 ---
 
@@ -75,6 +75,10 @@ A simple **`.json` config** lets you enable/disable each feature independently (
 
 * Location: `config/flattersigns.json` (generated after first launch)
 * Use case: keep only the bits you want if you’re *not* using Mode 13h.
+
+* Resource packs with non-vanilla sign silhouettes may need:
+    * `wall_sign_texture_crop_height` (1..16) — visible pixel height taken from the item texture.
+    * `wall_sign_texture_crop_offset` (0..16, clamped) — vertical offset into the item texture before cropping.
 
 ---
 
