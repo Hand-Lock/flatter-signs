@@ -1,9 +1,13 @@
 package com.handlock_.flattersigns.client;
 
+import com.handlock_.flattersigns.FlatterSigns;
 import com.handlock_.flattersigns.FlatterSignsConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.HangingSignBlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -18,6 +22,7 @@ import net.minecraft.client.render.model.json.ModelElementFace;
 import net.minecraft.client.render.model.json.ModelElementTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 public class FlatterSignsClient implements ClientModInitializer {
 
@@ -25,53 +30,53 @@ public class FlatterSignsClient implements ClientModInitializer {
     public void onInitializeClient() {
         if (FlatterSignsConfig.isFlatModelRenderingEnabled()) {
             // Ensure our flat sign models render with cutout.
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.OAK_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.SPRUCE_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BIRCH_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.JUNGLE_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.ACACIA_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.DARK_OAK_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.MANGROVE_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CHERRY_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BAMBOO_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CRIMSON_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.WARPED_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.OAK_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.SPRUCE_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BIRCH_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.JUNGLE_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ACACIA_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.DARK_OAK_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.MANGROVE_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CHERRY_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BAMBOO_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CRIMSON_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.WARPED_SIGN, RenderLayer.getCutout());
 
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.OAK_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.SPRUCE_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BIRCH_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.JUNGLE_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.ACACIA_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.DARK_OAK_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.MANGROVE_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CHERRY_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BAMBOO_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CRIMSON_WALL_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.WARPED_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.OAK_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.SPRUCE_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BIRCH_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.JUNGLE_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ACACIA_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.DARK_OAK_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.MANGROVE_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CHERRY_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BAMBOO_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CRIMSON_WALL_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.WARPED_WALL_SIGN, RenderLayer.getCutout());
 
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.OAK_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.SPRUCE_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BIRCH_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.JUNGLE_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.ACACIA_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.DARK_OAK_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.MANGROVE_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CHERRY_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BAMBOO_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CRIMSON_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.WARPED_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.OAK_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.SPRUCE_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BIRCH_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.JUNGLE_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ACACIA_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.DARK_OAK_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.MANGROVE_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CHERRY_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BAMBOO_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CRIMSON_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.WARPED_HANGING_SIGN, RenderLayer.getCutout());
 
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.OAK_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.SPRUCE_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BIRCH_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.JUNGLE_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.ACACIA_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.DARK_OAK_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.MANGROVE_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CHERRY_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.BAMBOO_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.CRIMSON_WALL_HANGING_SIGN, RenderLayer.getCutout());
-            BlockRenderLayerMap.INSTANCE.putBlock(net.minecraft.block.Blocks.WARPED_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.OAK_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.SPRUCE_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BIRCH_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.JUNGLE_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.ACACIA_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.DARK_OAK_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.MANGROVE_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CHERRY_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BAMBOO_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.CRIMSON_WALL_HANGING_SIGN, RenderLayer.getCutout());
+            BlockRenderLayerMap.INSTANCE.putBlock(Blocks.WARPED_WALL_HANGING_SIGN, RenderLayer.getCutout());
 
             // Replace BER with blank renderers to prevent vanilla text rendering.
             BlockEntityRendererFactories.register(BlockEntityType.SIGN, BlankSignRenderer::new);
@@ -80,6 +85,24 @@ public class FlatterSignsClient implements ClientModInitializer {
             // Apply wall sign crop at model-load time (resourcepack-friendly).
             registerWallSignCropModelModifier();
         }
+
+        // Register the client-side handler for the forced rerender packet.
+        // This is the missing piece for Forge via Sinytra Connector: normal BE update
+        // paths may not trigger a lighting/render rebuild, so the server sends an
+        // explicit packet after glow ink changes.
+        ClientPlayNetworking.registerGlobalReceiver(
+                FlatterSigns.FORCE_SIGN_RERENDER_PACKET_ID,
+                (client, handler, buf, responseSender) -> {
+                    BlockPos pos = buf.readBlockPos();
+                    client.execute(() -> {
+                        if (client.world == null) return;
+                        BlockState state = client.world.getBlockState(pos);
+                        // Pass a different oldState so the engine doesn't skip the rebuild.
+                        client.world.scheduleBlockRerenderIfNeeded(
+                                pos, Blocks.AIR.getDefaultState(), state);
+                    });
+                }
+        );
     }
 
     private static void registerWallSignCropModelModifier() {
@@ -128,7 +151,7 @@ public class FlatterSignsClient implements ClientModInitializer {
                 continue;
             }
 
-            // Anchor the top (matches your generated models: top is at ~15) and adjust height to match crop.
+            // Anchor the top and adjust height to match crop.
             float yTo = element.to.y;
             element.from.y = yTo - (float) cropHeightPx;
 
@@ -148,9 +171,7 @@ public class FlatterSignsClient implements ClientModInitializer {
                     // Default to full width and the requested window.
                     tex.setUvs(new float[]{0f, (float) cropOffsetPx, 16f, (float) (cropOffsetPx + cropHeightPx)});
                 } else {
-                    // Treat config as a WINDOW into the item texture:
-                    //   v1 = baseV1 + offset
-                    //   v2 = v1 + height
+                    // Treat config as a window into the item texture.
                     float baseV1 = uvs[1];
                     float v1 = baseV1 + (float) cropOffsetPx;
                     float maxV1 = baseV1 + (16f - (float) cropHeightPx);
@@ -167,7 +188,7 @@ public class FlatterSignsClient implements ClientModInitializer {
         }
     }
 
-    // Normal standing / wall signs: do not render text.
+    // Standing / wall signs: do not render text.
     private static class BlankSignRenderer implements BlockEntityRenderer<SignBlockEntity> {
         public BlankSignRenderer(BlockEntityRendererFactory.Context ctx) {}
 

@@ -5,8 +5,6 @@ import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.HangingSignBlock;
-import net.minecraft.block.WallHangingSignBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Forces MODEL rendering for sign-related BlockWithEntity blocks when
  * the "flat_model_rendering" config option is enabled.
+ * All sign variants (standing, wall, hanging, wall-hanging) extend
+ * AbstractSignBlock, so a single instanceof check covers them all.
  */
 @Mixin(BlockWithEntity.class)
 public abstract class BlockWithEntityRenderTypeMixin {
@@ -25,9 +25,7 @@ public abstract class BlockWithEntityRenderTypeMixin {
             return;
         }
 
-        if (state.getBlock() instanceof AbstractSignBlock
-                || state.getBlock() instanceof HangingSignBlock
-                || state.getBlock() instanceof WallHangingSignBlock) {
+        if (state.getBlock() instanceof AbstractSignBlock) {
             cir.setReturnValue(BlockRenderType.MODEL);
         }
     }
