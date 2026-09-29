@@ -41,3 +41,4 @@ replay_*.log
 
 modsources.txt
 collect_mod_sources.sh
+.local.env
