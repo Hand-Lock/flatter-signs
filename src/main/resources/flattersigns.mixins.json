@@ -8,6 +8,7 @@
     "sign.SignBlockEntityFrontOnlyMixin",
     "sign.AbstractSignBlockUseMixin",
     "sign.SignBlockEntityDefaultColorMixin",
+    "sign.InkSacItemGlowMixin",
     "block.BlockWithEntityRenderTypeMixin",
     "block.WallSignBlockHitboxMixin",
     "block.HangingSignBlockHitboxMixin",

@@ -24,6 +24,9 @@ face to write on, so the text goes to chat.
 | Forge             |    1.20.1 | Via Sinytra Connector + Forgified Fabric API    |
 | Without Mode 13h  |    1.20.1 | Works; signs show as cross models, no billboard |
 
+Modded signs get the same treatment; a resource pack must ship their flat
+models (ADR 0007).
+
 ## Current features
 
 Config keys in `config/flattersigns.json`, defaults in parentheses:
@@ -32,7 +35,8 @@ Config keys in `config/flattersigns.json`, defaults in parentheses:
   to the front.
 - `flat_model_rendering` (true): cross/flat block models replace the vanilla
   sign rendering; text is not drawn in the world.
-- `hitbox_tweaks` (true): outlines fit the flat models.
+- `hitbox_tweaks` (true): outlines fit the flat models; needs
+  `flat_model_rendering`.
 - `crouch_edit_and_chat` (true): right-click prints the text in chat as
   `<Sign> …` in the dye color; shift + right-click (or an empty sign) opens
   the editor; waxed signs can still be read.

@@ -44,7 +44,7 @@ public abstract class WallSignBlockHitboxMixin {
 
     @Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
     private void flattersigns$customWallSignShape(BlockState state, BlockView world, BlockPos pos, ShapeContext ctx, CallbackInfoReturnable<VoxelShape> cir) {
-        if (!FlatterSignsConfig.isHitboxTweaksEnabled()) {
+        if (!FlatterSignsConfig.isHitboxTweaksEnabled() || !FlatterSignsConfig.isFlatModelRenderingEnabled()) {
             return;
         }
 

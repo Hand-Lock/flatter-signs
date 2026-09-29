@@ -1,7 +1,7 @@
 # 0003. Signs as block models
 
 Date: 2026-09-29
-Status: Accepted
+Status: Accepted; partly superseded by 0007
 
 ## Context
 
@@ -12,8 +12,8 @@ diagonal quads), like plants.
 ## Decision
 
 - Override the vanilla sign blockstates with generated ones that point to
-  our models. Each blockstate carries the `flattersigns:flat_models_enabled`
-  load condition, so turning `flat_model_rendering` off restores vanilla.
+  our models. (The load condition this bullet once named never applied to
+  blockstates; see 0007.)
 - Force `BlockRenderType.MODEL` for every `AbstractSignBlock` and register
   blank block entity renderers, so no text is drawn in the world.
 - Standing and ceiling-hanging signs: cross models. Wall signs: a thin
@@ -30,5 +30,4 @@ diagonal quads), like plants.
 
 - Signs look right without the shaderpack too, just as crosses.
 - Packs with a different sign silhouette may need the wall-sign crop keys.
-- A new wood type means a line in the generator's `WOODS` and in
-  `FlatterSignsClient`'s render-layer list.
+- A new wood type means a line in the generator's `WOODS` (0007).

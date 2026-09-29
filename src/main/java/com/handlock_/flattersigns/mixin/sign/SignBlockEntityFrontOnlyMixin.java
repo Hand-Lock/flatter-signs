@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * When enabled, treats the front as the only editable side.
- * The back always mirrors the front.
+ * One-sided signs: every read and write goes to the front. setText and
+ * getTextFacing route through these, so they need no hooks of their own.
  */
 @Mixin(SignBlockEntity.class)
 public abstract class SignBlockEntityFrontOnlyMixin {
@@ -27,28 +27,12 @@ public abstract class SignBlockEntityFrontOnlyMixin {
         cir.setReturnValue(this.getFrontText());
     }
 
-    @Inject(method = "setText(Lnet/minecraft/block/entity/SignText;Z)Z", at = @At("HEAD"), cancellable = true)
-    private void flattersigns$forceFrontSet(SignText text, boolean front, CallbackInfoReturnable<Boolean> cir) {
-        if (!FlatterSignsConfig.isFrontOnlyEditEnabled()) {
-            return;
-        }
-        cir.setReturnValue(this.setFrontText(text));
-    }
-
     @Inject(method = "setBackText(Lnet/minecraft/block/entity/SignText;)Z", at = @At("HEAD"), cancellable = true)
     private void flattersigns$redirectBackToFront(SignText backText, CallbackInfoReturnable<Boolean> cir) {
         if (!FlatterSignsConfig.isFrontOnlyEditEnabled()) {
             return;
         }
         cir.setReturnValue(this.setFrontText(backText));
-    }
-
-    @Inject(method = "getTextFacing(Lnet/minecraft/entity/player/PlayerEntity;)Lnet/minecraft/block/entity/SignText;", at = @At("HEAD"), cancellable = true)
-    private void flattersigns$frontForFacing(PlayerEntity player, CallbackInfoReturnable<SignText> cir) {
-        if (!FlatterSignsConfig.isFrontOnlyEditEnabled()) {
-            return;
-        }
-        cir.setReturnValue(this.getFrontText());
     }
 
     @Inject(method = "isPlayerFacingFront(Lnet/minecraft/entity/player/PlayerEntity;)Z", at = @At("HEAD"), cancellable = true)

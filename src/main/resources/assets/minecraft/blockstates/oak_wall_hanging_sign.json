@@ -1,9 +1,4 @@
 {
-  "fabric:load_conditions": [
-    {
-      "condition": "flattersigns:flat_models_enabled"
-    }
-  ],
   "variants": {
     "facing=south": {
       "model": "flattersigns:block/oak_wall_hanging_sign_flat_x"

@@ -71,14 +71,18 @@ Their shape makes true billboarding impractical, so this is the best balance bet
 
 ## ⚙️ Configuration
 
-A simple **`.json` config** lets you enable/disable each feature independently (billboard model, chat printing, one-sided behavior, shift-to-edit logic, dye/glow/wax behavior, hanging sign support, etc.).
+`config/flattersigns.json` is created on first launch. Every feature has its own toggle, so you can keep only the bits you want if you’re *not* using Mode 13h. Restart the game after editing it.
 
-* Location: `config/flattersigns.json` (generated after first launch)
-* Use case: keep only the bits you want if you’re *not* using Mode 13h.
+* `front_only_edit` (`true`): signs are one-sided.
+* `flat_model_rendering` (`true`): flat/cross models instead of vanilla sign rendering.
+* `hitbox_tweaks` (`true`): outlines fit the flat models (needs `flat_model_rendering`).
+* `crouch_edit_and_chat` (`true`): right click reads in chat, Shift + right click edits.
+* `default_white_text` (`true`): new signs have white text.
+* `glow_ink_lighting` (`true`): glowing signs render fullbright (needs `flat_model_rendering`).
+* `wall_sign_texture_crop_height` (`11`, 1..16): pixel rows of the item texture shown on wall signs.
+* `wall_sign_texture_crop_offset` (`0`): rows skipped before the crop, at most 16 − height.
 
-* Resource packs with non-vanilla sign silhouettes may need:
-    * `wall_sign_texture_crop_height` (1..16) — visible pixel height taken from the item texture.
-    * `wall_sign_texture_crop_offset` (0..16, clamped) — vertical offset into the item texture before cropping.
+The last two are for resource packs whose sign item has a different silhouette.
 
 ---
 

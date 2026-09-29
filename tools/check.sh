@@ -1,5 +1,5 @@
 #!/bin/sh
-# Offline checks: generated assets in sync, mixin registry, Gradle build,
+# Offline checks: generated assets in sync, mixin registry, Gradle build, refmaps,
 # scan for private data. Exits non-zero on any failure.
 # Usage: tools/check.sh
 set -u
@@ -38,6 +38,14 @@ registry client flattersigns.client.mixins.json
 
 # Build: compiles, runs the mixin annotation processor, writes the refmap.
 out=$(./gradlew build -q 2>&1) || { err "gradle build:"; printf '%s\n' "$out" | tail -40 | sed 's/^/    /'; }
+
+# Refmaps: a config naming the wrong one still loads, but its named injects
+# silently miss in production (require = 0).
+jar=$(ls -t build/libs/*.jar 2>/dev/null | grep -v -- '-sources' | head -1)
+for c in src/main/resources/flattersigns.mixins.json src/client/resources/flattersigns.client.mixins.json; do
+    r=$(jq -r .refmap "$c")
+    unzip -l "$jar" "$r" >/dev/null 2>&1 || err "$c: refmap $r is not in the jar"
+done
 
 # Private data: emails other than GitHub noreply, local home paths.
 priv=$(git ls-files -co --exclude-standard | grep -v '^tools/check\.sh$' | while IFS= read -r f; do

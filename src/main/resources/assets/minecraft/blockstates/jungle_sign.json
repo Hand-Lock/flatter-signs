@@ -1,9 +1,4 @@
 {
-  "fabric:load_conditions": [
-    {
-      "condition": "flattersigns:flat_models_enabled"
-    }
-  ],
   "variants": {
     "rotation=0": {
       "model": "flattersigns:block/jungle_sign_flat"
