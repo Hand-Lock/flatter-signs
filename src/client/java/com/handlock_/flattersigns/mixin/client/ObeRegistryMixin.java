@@ -13,14 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Optimized Block Entities bakes the sign entity model into chunk meshes, on
  * top of our flat models. Its own sign toggles are miswired, so signs opt out
- * here (ADR 0008).
+ * here (ADR 0008). Each target is listed twice: intermediary for the Fabric
+ * build, Mojmap for OBE's native Forge build, which Connector doesn't remap
+ * (ADR 0002).
  */
 @Pseudo
 @Mixin(targets = "fr.madu59.obe.client.registry.Registry", remap = false)
 public abstract class ObeRegistryMixin {
 
     @Inject(
-            method = "isSupported(Ljava/lang/String;Lnet/minecraft/class_2591;)Z",
+            method = {
+                    "isSupported(Ljava/lang/String;Lnet/minecraft/class_2591;)Z",
+                    "isSupported(Ljava/lang/String;Lnet/minecraft/world/level/block/entity/BlockEntityType;)Z"
+            },
             at = @At("HEAD"),
             cancellable = true,
             require = 0
@@ -34,7 +39,10 @@ public abstract class ObeRegistryMixin {
     }
 
     @Inject(
-            method = "getGroup(Lnet/minecraft/class_2680;)Ljava/lang/String;",
+            method = {
+                    "getGroup(Lnet/minecraft/class_2680;)Ljava/lang/String;",
+                    "getGroup(Lnet/minecraft/world/level/block/state/BlockState;)Ljava/lang/String;"
+            },
             at = @At("HEAD"),
             cancellable = true,
             require = 0

@@ -16,9 +16,12 @@ no option at all.
 - A client `@Pseudo` mixin on `fr.madu59.obe.client.registry.Registry`,
   targeted by string, makes `isSupported` false for the sign and hanging
   sign block entity types and `getGroup` null for sign block states.
-- No dependency on OBE, not even compile-only: descriptors are intermediary
-  strings with `remap = false` and `require = 0`, so a missing OBE or a
-  changed OBE API just leaves the mixin inert.
+- No dependency on OBE, not even compile-only: descriptors are strings with
+  `remap = false` and `require = 0`, so a missing OBE or a changed OBE API
+  just leaves the mixin inert.
+- Each method is targeted by two full descriptors: intermediary for OBE's
+  Fabric build, Mojmap for its native Forge build, which Connector doesn't
+  remap. Name-only targets would also hit overloads with other signatures.
 - Only active with `flat_model_rendering`; with it off, OBE optimises signs
   as usual.
 
@@ -27,4 +30,4 @@ no option at all.
 - Signs are never OBE-optimised while our models are in use, which costs
   nothing since there's no entity model left to draw.
 - If OBE renames these methods, the overlay comes back silently; recheck
-  on OBE updates.
+  both the Fabric and the Forge build on OBE updates.

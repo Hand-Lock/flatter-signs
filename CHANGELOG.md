@@ -5,6 +5,10 @@ Versions: [SemVer](https://semver.org/) (see `docs/adr/0006-release-and-privacy.
 
 ## [Unreleased]
 
+### Fixed
+- Optimized Block Entities no longer draws vanilla signs over flat models
+  on Forge.
+
 ## [1.2.0] - 2026-09-29
 
 ### Fixed
