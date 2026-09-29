@@ -5,6 +5,8 @@ Versions: [SemVer](https://semver.org/) (see `docs/adr/0006-release-and-privacy.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-29
+
 ### Added
 - Minecraft 1.21.1 support: Fabric, and NeoForge via Sinytra Connector.
 
