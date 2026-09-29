@@ -5,6 +5,8 @@ Versions: [SemVer](https://semver.org/) (see `docs/adr/0006-release-and-privacy.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-29
+
 ### Fixed
 - `wall_sign_texture_crop_height` and `wall_sign_texture_crop_offset` now
   take effect; they were ignored before.
