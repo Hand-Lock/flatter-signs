@@ -5,6 +5,8 @@ Versions: [SemVer](https://semver.org/) (see `docs/adr/0006-release-and-privacy.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-29
+
 ### Fixed
 - With Optimized Block Entities, the vanilla sign model no longer draws
   over flat signs.
