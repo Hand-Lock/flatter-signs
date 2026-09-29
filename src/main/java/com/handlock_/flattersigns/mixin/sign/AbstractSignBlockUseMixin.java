@@ -6,6 +6,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -35,11 +37,28 @@ public abstract class AbstractSignBlockUseMixin {
     private void flattersigns$readOrEdit(AbstractSignBlock instance, PlayerEntity player,
                                          SignBlockEntity sign, boolean front) {
         SignText text = sign.getText(front);
-        if (!FlatterSignsConfig.isCrouchEditAndChatEnabled() || player.isSneaking() || !text.hasText(player)) {
+        if (flattersigns$reads(player, text)) {
+            flattersigns$sendToChat(player, text);
+        } else {
             instance.openEditScreen(player, sign, front);
-            return;
         }
-        flattersigns$sendToChat(player, text);
+    }
+
+    // The waxed "can't edit" sound only makes sense on an edit attempt.
+    @Redirect(
+            method = "onUse",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;)V"
+            )
+    )
+    private void flattersigns$waxedSound(World instance, PlayerEntity except, BlockPos soundPos, SoundEvent sound,
+                                         SoundCategory category, BlockState state, World world, BlockPos pos,
+                                         PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (!(world.getBlockEntity(pos) instanceof SignBlockEntity sign)
+                || !flattersigns$reads(player, sign.getTextFacing(player))) {
+            instance.playSound(except, soundPos, sound, category);
+        }
     }
 
     // Vanilla returns early for waxed signs; checked at HEAD so the wax just
@@ -51,8 +70,15 @@ public abstract class AbstractSignBlockUseMixin {
             return;
         }
         if (!world.isClient && world.getBlockEntity(pos) instanceof SignBlockEntity sign && sign.isWaxed()) {
-            flattersigns$sendToChat(player, sign.getTextFacing(player));
+            SignText text = sign.getTextFacing(player);
+            if (flattersigns$reads(player, text)) {
+                flattersigns$sendToChat(player, text);
+            }
         }
+    }
+
+    private static boolean flattersigns$reads(PlayerEntity player, SignText text) {
+        return FlatterSignsConfig.isCrouchEditAndChatEnabled() && !player.isSneaking() && text.hasText(player);
     }
 
     private static void flattersigns$sendToChat(PlayerEntity player, SignText text) {

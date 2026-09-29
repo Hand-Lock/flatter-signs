@@ -5,6 +5,14 @@ Versions: [SemVer](https://semver.org/) (see `docs/adr/0006-release-and-privacy.
 
 ## [Unreleased]
 
+### Fixed
+- With Optimized Block Entities, the vanilla sign model no longer draws
+  over flat signs.
+- Glow ink works with Sodium.
+
+### Changed
+- The waxed-sign sound only plays on shift + right-click, not when reading.
+
 ## [1.1.0] - 2026-09-29
 
 ### Fixed

@@ -16,7 +16,7 @@ loader builds would double the work for a mod this small.
 - Forge is supported through Sinytra Connector + Forgified Fabric API, not
   a separate build. Where Connector remaps or skips a code path, mixins add
   extra injects with `require = 0` against the Mojmap and intermediary names
-  (`load`, `handleUpdateTag`, `method_23793`…), so a missing target never
+  (`load`, `handleUpdateTag`, `method_26208`…), so a missing target never
   crashes.
 - Glow-ink changes don't always rebuild the chunk on Forge. The server sends
   a block entity update plus a `flattersigns:force_sign_rerender` S2C packet,

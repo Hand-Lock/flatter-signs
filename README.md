@@ -44,7 +44,7 @@ These interactions affect both the sign itself *and* the chat output:
 
 * **Dye** a sign → the text printed in chat matches the dyed color.
 * **Glow ink sac** → sign **glows in the dark**.
-* **Honeycomb (wax)** → sign becomes **non-editable** (even with Shift+RMB) but still readable/printable.
+* **Honeycomb (wax)** → sign becomes **non-editable** (even with Shift+RMB) but still readable/printable; the sticky sound only plays when you try to edit.
 
 ---
 
@@ -78,7 +78,7 @@ Their shape makes true billboarding impractical, so this is the best balance bet
 * `hitbox_tweaks` (`true`): outlines fit the flat models (needs `flat_model_rendering`).
 * `crouch_edit_and_chat` (`true`): right click reads in chat, Shift + right click edits.
 * `default_white_text` (`true`): new signs have white text.
-* `glow_ink_lighting` (`true`): glowing signs render fullbright (needs `flat_model_rendering`).
+* `glow_ink_lighting` (`true`): glowing signs render fullbright, Sodium included; they don't light up their surroundings (needs `flat_model_rendering`).
 * `wall_sign_texture_crop_height` (`11`, 1..16): pixel rows of the item texture shown on wall signs.
 * `wall_sign_texture_crop_offset` (`0`): rows skipped before the crop, at most 16 − height.
 
@@ -93,6 +93,7 @@ The last two are for resource packs whose sign item has a different silhouette.
 | **Fabric**                      | **1.20.1** |    ✅   | Native target                                             |
 | **Forge**                       | **1.20.1** |    ✅   | Via **Sinytra Connector** + **Forgified Fabric API**      |
 | **Without Mode 13h shaderpack** |     1.20.1 |   ✅*   | *No billboard effect; signs appear as cross/hatch models* |
+| **Optimized Block Entities**    |     1.20.1 |    ✅   | Handled automatically; OBE leaves signs to this mod      |
 
 ---
 
