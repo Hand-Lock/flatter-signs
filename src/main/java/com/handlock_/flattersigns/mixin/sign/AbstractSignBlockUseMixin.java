@@ -12,7 +12,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
+//? if <1.20.5
+//import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,23 +55,25 @@ public abstract class AbstractSignBlockUseMixin {
     )
     private void flattersigns$waxedSound(World instance, PlayerEntity except, BlockPos soundPos, SoundEvent sound,
                                          SoundCategory category, BlockState state, World world, BlockPos pos,
-                                         PlayerEntity player, Hand hand, BlockHitResult hit) {
+                                         PlayerEntity player) {
         if (!(world.getBlockEntity(pos) instanceof SignBlockEntity sign)
-                || !flattersigns$reads(player, sign.getTextFacing(player))) {
+                || !flattersigns$reads(player, sign.getText(sign.isPlayerFacingFront(player)))) {
             instance.playSound(except, soundPos, sound, category);
         }
     }
 
     // Vanilla returns early for waxed signs; checked at HEAD so the wax just
-    // being applied doesn't count.
+    // being applied doesn't count. 1.20.5 dropped the Hand parameter.
     @Inject(method = "onUse", at = @At("HEAD"))
     private void flattersigns$readWaxed(BlockState state, World world, BlockPos pos, PlayerEntity player,
-                                        Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+                                        //? if <1.20.5
+                                        //Hand hand,
+                                        BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if (!FlatterSignsConfig.isCrouchEditAndChatEnabled()) {
             return;
         }
         if (!world.isClient && world.getBlockEntity(pos) instanceof SignBlockEntity sign && sign.isWaxed()) {
-            SignText text = sign.getTextFacing(player);
+            SignText text = sign.getText(sign.isPlayerFacingFront(player));
             if (flattersigns$reads(player, text)) {
                 flattersigns$sendToChat(player, text);
             }

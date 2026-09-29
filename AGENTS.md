@@ -1,19 +1,26 @@
 # Flatter Signs — agent guide
 
-Flatter Signs is a small Fabric mod for Minecraft 1.20.1, an add-on for the
-Mode 13h shaderpack: it turns signs into cross models the shader billboards,
-and makes them readable through chat. Product direction lives in
+Flatter Signs is a small Fabric mod for Minecraft 1.20.1 and 1.21.1, an
+add-on for the Mode 13h shaderpack: it turns signs into cross models the
+shader billboards, and makes them readable through chat. Product direction lives in
 [SPEC.md](SPEC.md); decisions and their reasons live in
 [docs/adr/](docs/adr/). Read both before changing architecture, behavior or
 compatibility.
 
 ## Hard constraints
 
-- Minecraft **1.20.1**, Yarn mappings, Java 17 bytecode.
+- Minecraft **1.20.1** and **1.21.1** from one codebase with Stonecutter
+  (ADR 0009), Yarn mappings, Java 17 / 21 bytecode.
+- Where an API differs, use a Stonecutter comment condition on the version
+  that introduced the change (`//? if >=1.20.5 {`), right at the call.
+- Committed sources are 1.21.1's (`vcsVersion`). After
+  `./gradlew "Set active project to 1.20.1"`, run
+  `./gradlew "Reset active project"` before committing.
 - Fabric API is the only dependency.
-- Must keep working on Forge via Sinytra Connector + Forgified Fabric API.
-  Keep the `require = 0` Mojmap/intermediary fallback injects and the
-  `force_sign_rerender` packet (ADR 0002).
+- Must keep working via Sinytra Connector + Forgified Fabric API: Forge and
+  NeoForge on 1.20.1, NeoForge on 1.21.1. Keep the `require = 0`
+  Mojmap/intermediary fallback injects and the `force_sign_rerender` packet
+  (ADR 0009).
 - Client-only code stays in `src/client`.
 - Every behavior sits behind a config toggle (ADR 0005).
 - Don't break the Mode 13h add-on contract: block ID 10956 billboards our
@@ -36,6 +43,11 @@ Suckless: the smallest change that works.
 ## File map
 
 ```
+settings.gradle.kts           Minecraft versions, vcsVersion
+stonecutter.gradle.kts        active version (keep = vcsVersion)
+build.gradle.kts              one build script for every version
+gradle.properties             shared versions, mod_version
+versions/<mc>/gradle.properties  yarn, Fabric API, fabric.mod.json range
 src/main/java/com/handlock_/flattersigns/
   FlatterSigns.java           common entrypoint, packet id
   FlatterSignsConfig.java     config/flattersigns.json: fields, load, write
@@ -53,7 +65,7 @@ src/client/java/com/handlock_/flattersigns/
 src/client/resources/flattersigns.client.mixins.json
 tools/
   gen_flat_sign_assets.py     blockstates + models for every wood
-  check.sh, release.sh, modrinth.json
+  check.sh, release.sh, modrinth.json (loaders per Minecraft version)
 ```
 
 ## Adding a config option
@@ -69,7 +81,8 @@ For every task:
 
 1. Implement it.
 2. Run `tools/check.sh` and fix everything it reports (generated assets in
-   sync, mixin registry, Gradle build, privacy grep).
+   sync, mixin registry, active version, Gradle build of every version,
+   privacy grep).
 3. Add a line under `## [Unreleased]` in `CHANGELOG.md` (Added / Changed /
    Fixed / Removed) if a player would notice.
 4. Write an ADR in `docs/adr/` if the change decides something about
@@ -85,8 +98,9 @@ their own and tells you when something is wrong.
 
 Only when the user reports a problem, or asks you to look. You can't see the
 game. If a new build is needed, run `./gradlew build` and copy
-`build/libs/flattersigns-X.Y.Z+1.20.1.jar` (not `-sources`) into each
-instance's `mods/`, replacing the old one; the game must be restarted. Ask
+`versions/<mc>/build/libs/flattersigns-X.Y.Z+<mc>.jar` (not `-sources`) into
+each instance's `mods/` for that instance's Minecraft version, replacing the
+old one; the game must be restarted. Ask
 the user to press F2, then read the newest screenshot:
 
 ```sh
@@ -113,9 +127,9 @@ Only when the user says **release**. Never on your own initiative.
    `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` and add a fresh empty
    `## [Unreleased]` above it. Commit both as "Release X.Y.Z" and push.
 4. Run `tools/release.sh X.Y.Z` (use `--dry-run` first if unsure). It checks,
-   builds the jar, tags, creates the GitHub release, uploads the version to
-   Modrinth (`tools/modrinth.json`), and syncs the Modrinth page from
-   README.md.
+   builds every version's jar, tags, creates one GitHub release with all
+   jars, uploads one Modrinth version per Minecraft version
+   (`tools/modrinth.json`), and syncs the Modrinth page from README.md.
 
 ## Privacy
 

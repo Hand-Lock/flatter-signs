@@ -36,15 +36,26 @@ registry() { # SOURCESET CONFIG
 registry main flattersigns.mixins.json
 registry client flattersigns.client.mixins.json
 
-# Build: compiles, runs the mixin annotation processor, writes the refmap.
+# Stonecutter: committed sources must be the vcsVersion ones, or a switched
+# checkout gets committed (ADR 0009).
+vcs=$(sed -n 's/.*vcsVersion = "\(.*\)".*/\1/p' settings.gradle.kts)
+active=$(sed -n 's/^stonecutter active "\(.*\)".*/\1/p' stonecutter.gradle.kts)
+[ "$active" = "$vcs" ] ||
+    err "stonecutter active is $active, not vcsVersion $vcs (run ./gradlew \"Reset active project\")"
+
+# Build: every Minecraft version compiles, runs the mixin annotation
+# processor, writes the refmaps.
 out=$(./gradlew build -q 2>&1) || { err "gradle build:"; printf '%s\n' "$out" | tail -40 | sed 's/^/    /'; }
 
 # Refmaps: a config naming the wrong one still loads, but its named injects
 # silently miss in production (require = 0).
-jar=$(ls -t build/libs/*.jar 2>/dev/null | grep -v -- '-sources' | head -1)
-for c in src/main/resources/flattersigns.mixins.json src/client/resources/flattersigns.client.mixins.json; do
-    r=$(jq -r .refmap "$c")
-    unzip -l "$jar" "$r" >/dev/null 2>&1 || err "$c: refmap $r is not in the jar"
+for d in versions/*/; do
+    jar=$(ls -t "$d"build/libs/*.jar 2>/dev/null | grep -v -- '-sources' | head -1)
+    [ -n "$jar" ] || { err "$d: no jar built"; continue; }
+    for c in src/main/resources/flattersigns.mixins.json src/client/resources/flattersigns.client.mixins.json; do
+        r=$(jq -r .refmap "$c")
+        unzip -l "$jar" "$r" >/dev/null 2>&1 || err "$c: refmap $r is not in $jar"
+    done
 done
 
 # Private data: emails other than GitHub noreply, local home paths.

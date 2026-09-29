@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.handlock_.flattersigns.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_${java}",
   "refmap": "client-flattersigns.refmap.json",
   "client": [
     "client.BlockStateSignGlowMixin",

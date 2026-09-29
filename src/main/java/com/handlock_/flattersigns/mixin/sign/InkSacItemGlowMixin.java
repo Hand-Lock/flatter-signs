@@ -2,7 +2,8 @@ package com.handlock_.flattersigns.mixin.sign;
 
 import com.handlock_.flattersigns.FlatterSigns;
 import com.handlock_.flattersigns.FlatterSignsConfig;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+//? if <1.20.5
+//import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -48,9 +49,13 @@ public abstract class InkSacItemGlowMixin {
         BlockEntityUpdateS2CPacket update = BlockEntityUpdateS2CPacket.create(sign);
         for (ServerPlayerEntity p : targets) {
             p.networkHandler.sendPacket(update);
-            var buf = PacketByteBufs.create();
+            //? if >=1.20.5 {
+            ServerPlayNetworking.send(p, new FlatterSigns.ForceSignRerender(sign.getPos()));
+            //?} else {
+            /*var buf = PacketByteBufs.create();
             buf.writeBlockPos(sign.getPos());
             ServerPlayNetworking.send(p, FlatterSigns.FORCE_SIGN_RERENDER_PACKET_ID, buf);
+            *///?}
         }
     }
 }

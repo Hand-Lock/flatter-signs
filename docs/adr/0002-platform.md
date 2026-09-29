@@ -1,7 +1,7 @@
 # 0002. Platform: Fabric 1.20.1, Forge via Connector
 
 Date: 2026-09-29
-Status: Accepted
+Status: Superseded by 0009
 
 ## Context
 

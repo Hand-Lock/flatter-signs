@@ -2,7 +2,7 @@
 
 # Flatter Signs: A Mode 13h Addon
 
-*A Fabric mod for Minecraft 1.20.1 that adds **billboarding** to signs when paired with the **Mode 13h** shaderpack.*
+*A Fabric mod for Minecraft 1.20.1 and 1.21.1 that adds **billboarding** to signs when paired with the **Mode 13h** shaderpack. Forge (1.20.1) and NeoForge (1.20.1, 1.21.1) work via Sinytra Connector.*
 
 > **Designed as an addon for [Mode 13h: MS-DOSify!](https://modrinth.com/project/mode-13h).**
 > Without the shaderpack you *can* still use the mod, but signs will render as a **cross/hatch** model (like vanilla grass/flowers), because Mode 13h is what actually converts those models into billboards.
@@ -91,8 +91,10 @@ The last two are for resource packs whose sign item has a different silhouette.
 | Platform                        |  Minecraft | Works? | Notes                                                     |
 | ------------------------------- | ---------: | :----: | --------------------------------------------------------- |
 | **Fabric**                      | **1.20.1** |    ✅   | Native target                                             |
-| **Forge**                       | **1.20.1** |    ✅   | Via **Sinytra Connector** + **Forgified Fabric API**      |
-| **Without Mode 13h shaderpack** |     1.20.1 |   ✅*   | *No billboard effect; signs appear as cross/hatch models* |
+| **Forge / NeoForge**            | **1.20.1** |    ✅   | Via **Sinytra Connector** + **Forgified Fabric API**      |
+| **Fabric**                      | **1.21.1** |    ✅   | Native target                                             |
+| **NeoForge**                    | **1.21.1** |    ✅   | Via **Sinytra Connector** + **Forgified Fabric API**      |
+| **Without Mode 13h shaderpack** |        all |   ✅*   | *No billboard effect; signs appear as cross/hatch models* |
 | **Optimized Block Entities**    |     1.20.1 |    ✅   | Handled automatically; OBE leaves signs to this mod      |
 
 ---

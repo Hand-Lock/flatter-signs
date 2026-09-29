@@ -21,9 +21,14 @@ face to write on, so the text goes to chat.
 | Platform          | Minecraft | Status                                          |
 | ----------------- | --------: | ----------------------------------------------- |
 | Fabric            |    1.20.1 | Native target                                   |
-| Forge             |    1.20.1 | Via Sinytra Connector + Forgified Fabric API    |
-| Without Mode 13h  |    1.20.1 | Works; signs show as cross models, no billboard |
+| Forge, NeoForge   |    1.20.1 | Via Sinytra Connector + Forgified Fabric API    |
+| Fabric            |    1.21.1 | Native target                                   |
+| NeoForge          |    1.21.1 | Via Sinytra Connector + Forgified Fabric API    |
+| Without Mode 13h  |       all | Works; signs show as cross models, no billboard |
 | Optimized Block Entities | 1.20.1 | Signs opt out of OBE's baking (ADR 0008) |
+
+Every Minecraft version builds from one codebase (ADR 0009); Forge proper
+has no Connector past 1.20.1.
 
 Modded signs get the same treatment; a resource pack must ship their flat
 models (ADR 0007).
@@ -60,8 +65,9 @@ change and a major version.
 
 ## Roadmap
 
-- **R1. Port to 1.21.1+** (Mode 13h roadmap R6). Needs an ADR first:
-  one codebase or branches, and what happens to the Forge path.
+- **R1. Port to 1.21.1+** (Mode 13h roadmap R6). 1.21.1 done (ADR 0009).
+  Next versions follow Mode 13h; 26.x needs Mojmap (Yarn ends at 1.21.11)
+  and an ADR.
 
 ## Non-goals
 

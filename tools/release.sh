@@ -1,6 +1,6 @@
 #!/bin/sh
-# Publish a release: check, build, tag, GitHub release, Modrinth version,
-# Modrinth page body (from README.md).
+# Publish a release: check, build, tag, GitHub release with every jar, one
+# Modrinth version per Minecraft version, Modrinth page body (from README.md).
 # Usage: tools/release.sh X.Y.Z [--dry-run]
 #   --dry-run  run checks and build, print every payload, send nothing.
 # Token: $MODRINTH_TOKEN, else Keychain item "modrinth-token".
@@ -15,8 +15,6 @@ dry=0
 [ "${2:-}" = --dry-run ] && dry=1
 printf '%s' "$ver" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || die "usage: tools/release.sh X.Y.Z [--dry-run]"
 tag=v$ver
-mc=$(sed -n 's/^minecraft_version=//p' gradle.properties)
-full=$ver+$mc
 API=https://api.modrinth.com/v2
 UA="Hand-Lock/flatter-signs release.sh (github.com/Hand-Lock/flatter-signs)"
 CFG=tools/modrinth.json
@@ -68,25 +66,34 @@ fi
 tools/check.sh
 # -P so a dry run for the next version builds the jar it would upload.
 out=$(./gradlew -q clean build -Pmod_version="$ver" 2>&1) || { printf '%s\n' "$out" >&2; die "gradle build failed"; }
-jar=build/libs/flattersigns-$full.jar
-[ -f "$jar" ] || die "$jar not built"
-file=$(basename "$jar")
 
-jq --arg n "$ver" --arg v "$full" --rawfile cl "$TMP/changelog.md" '{
-    project_id, loaders, game_versions, version_type, dependencies,
-    name: $n, version_number: $v, changelog: $cl,
-    featured: true, status: "listed",
-    file_parts: ["file"], primary_file: "file"
-}' "$CFG" > "$TMP/version.json"
+# One jar and one Modrinth version per Minecraft version (versions/<mc>/).
+mcs=$(ls versions)
+jars=
+for mc in $mcs; do
+    jar=versions/$mc/build/libs/flattersigns-$ver+$mc.jar
+    [ -f "$jar" ] || die "$jar not built"
+    jq -e --arg mc "$mc" '.versions[$mc]' "$CFG" >/dev/null || die "$CFG has no versions.\"$mc\""
+    jars="$jars $jar"
+    jq --arg mc "$mc" --arg n "$ver" --arg v "$ver+$mc" --rawfile cl "$TMP/changelog.md" '{
+        project_id, version_type, dependencies,
+        loaders: .versions[$mc].loaders, game_versions: .versions[$mc].game_versions,
+        name: $n, version_number: $v, changelog: $cl,
+        featured: true, status: "listed",
+        file_parts: ["file"], primary_file: "file"
+    }' "$CFG" > "$TMP/version-$mc.json"
+done
 project=$(jq -r .project_id "$CFG")
 jq -n --rawfile b README.md '{body: $b}' > "$TMP/body.json"
 
 if [ "$dry" = 1 ]; then
     echo "--- git: tag $tag, push origin $tag"
-    echo "--- gh release create $tag $jar --title $ver, notes:"
+    echo "--- gh release create $tag$jars --title $ver, notes:"
     cat "$TMP/notes.md"
-    echo "--- POST $API/version (file: $file)"
-    cat "$TMP/version.json"
+    for mc in $mcs; do
+        echo "--- POST $API/version (file: flattersigns-$ver+$mc.jar)"
+        cat "$TMP/version-$mc.json"
+    done
     echo "--- PATCH $API/project/$project body: README.md ($(wc -c < README.md | tr -d ' ') bytes)"
     echo "--- dry run: nothing sent"
     exit 0
@@ -96,14 +103,17 @@ fi
 git tag "$tag"
 git push origin "$tag"
 
-gh release create "$tag" "$jar" --title "$ver" --notes-file "$TMP/notes.md"
+gh release create "$tag" $jars --title "$ver" --notes-file "$TMP/notes.md"
 
-curl -sS --fail-with-body -X POST "$API/version" \
-    -H "Authorization: $token" -H "User-Agent: $UA" \
-    -F "data=<$TMP/version.json;type=application/json" \
-    -F "file=@$jar;type=application/java-archive;filename=$file" > "$TMP/resp.json" ||
-    { cat "$TMP/resp.json" >&2; die "Modrinth version upload failed (tag and GitHub release already exist)"; }
-echo "Modrinth version: $(jq -r .id "$TMP/resp.json")"
+for mc in $mcs; do
+    jar=versions/$mc/build/libs/flattersigns-$ver+$mc.jar
+    curl -sS --fail-with-body -X POST "$API/version" \
+        -H "Authorization: $token" -H "User-Agent: $UA" \
+        -F "data=<$TMP/version-$mc.json;type=application/json" \
+        -F "file=@$jar;type=application/java-archive;filename=$(basename "$jar")" > "$TMP/resp.json" ||
+        { cat "$TMP/resp.json" >&2; die "Modrinth $mc upload failed (tag, GitHub release and earlier versions already exist)"; }
+    echo "Modrinth version $ver+$mc: $(jq -r .id "$TMP/resp.json")"
+done
 
 curl -sS --fail-with-body -X PATCH "$API/project/$project" \
     -H "Authorization: $token" -H "User-Agent: $UA" \
